@@ -34,24 +34,98 @@ body {
   text-align: center;
 }
 
-/* --- Encabezado --- */
+/* --- Encabezado y Marcadores --- */
 header {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: center;
+  gap: 12px;
   margin-bottom: 20px;
   border-bottom: 2px solid #2d3748;
   padding-bottom: 12px;
 }
 
 h1 {
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   letter-spacing: 2px;
   color: var(--accent-color);
 }
 
 #score-board {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  gap: 10px;
+}
+
+.team-score {
+  flex: 1;
+  background: #0d1b2a;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all 0.3s ease;
+  opacity: 0.6;
+}
+
+.team-score.active {
+  border-color: var(--accent-color);
+  opacity: 1;
+  background: #112236;
+  box-shadow: 0 0 10px rgba(255, 75, 75, 0.2);
+}
+
+.team-score span {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
+}
+
+.team-score strong {
   font-size: 1.1rem;
+  color: #ffffff;
+}
+
+/* --- Pantalla de Registro de Nombres --- */
+.subtitle {
+  font-size: 0.9rem;
+  color: #94a3b8;
+  margin: 10px 0 20px 0;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  margin-bottom: 15px;
+}
+
+.input-group label {
+  font-size: 0.85rem;
+  font-weight: bold;
+  color: #cbd5e1;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #334155;
+  background-color: #0d1b2a;
+  color: #ffffff;
+  font-size: 1rem;
+  outline: none;
+}
+
+.input-group input:focus {
+  border-color: var(--accent-color);
 }
 
 /* --- Botones --- */
@@ -64,7 +138,7 @@ h1 {
   font-weight: bold;
   border-radius: 10px;
   cursor: pointer;
-  margin-top: 15px;
+  margin-top: 10px;
   width: 100%;
   transition: background 0.2s, transform 0.1s;
 }
@@ -110,7 +184,7 @@ h1 {
 #dial-container {
   position: relative;
   width: 360px;
-  height: 180px; /* Semicírculo perfecto */
+  height: 180px;
   margin: 20px auto;
   overflow: hidden;
   border-top-left-radius: 180px;
@@ -139,7 +213,6 @@ h1 {
   z-index: 5;
 }
 
-/* Marcador (Tick) de la regla */
 .scale-tick {
   position: absolute;
   bottom: 0;
@@ -156,18 +229,16 @@ h1 {
   left: 50%;
   transform: translateX(-50%);
   width: 2px;
-  height: 10px; /* Longitud corta para marcas de 0.5 */
+  height: 10px;
   background-color: rgba(255, 255, 255, 0.4);
 }
 
-/* Estilo para las marcas de números enteros (0, 1, 2... 10) */
 .scale-tick.major::before {
-  height: 18px; /* Marca más larga */
+  height: 18px;
   width: 2px;
   background-color: #ffffff;
 }
 
-/* Número asociado al punto entero */
 .scale-label {
   position: absolute;
   top: 26px;
@@ -191,11 +262,11 @@ h1 {
   background: conic-gradient(
     from 270deg at 50% 100%,
     transparent 0deg 75deg,
-    #f59e0b 75deg 81deg,  /* 2 Puntos */
-    #f97316 81deg 87deg,  /* 3 Puntos */
-    #38bdf8 87deg 93deg,  /* 4 Puntos */
-    #f97316 93deg 99deg,  /* 3 Puntos */
-    #f59e0b 99deg 105deg, /* 2 Puntos */
+    #f59e0b 75deg 81deg,
+    #f97316 81deg 87deg,
+    #38bdf8 87deg 93deg,
+    #f97316 93deg 99deg,
+    #f59e0b 99deg 105deg,
     transparent 105deg 180deg
   );
   transform-origin: 50% 100%;

@@ -9,17 +9,42 @@
 <body>
 
   <div id="app">
-    <!-- Encabezado -->
+    <!-- Encabezado con Marcador Doble -->
     <header>
       <h1>FRECUENCIA</h1>
       <div id="score-board">
-        <span>Puntos: <strong id="score">0</strong></span>
+        <div class="team-score active" id="score-team1">
+          <span id="name-display-1">Equipo 1</span>
+          <strong id="score-val-1">0 pts</strong>
+        </div>
+        <div class="team-score" id="score-team2">
+          <span id="name-display-2">Equipo 2</span>
+          <strong id="score-val-2">0 pts</strong>
+        </div>
       </div>
     </header>
 
+    <!-- PANTALLA 0: Registro de Equipos (Inicial) -->
+    <section id="screen-setup-teams" class="screen">
+      <h2>Configuración de la Partida</h2>
+      <p class="subtitle">Introduce el nombre de los jugadores o equipos:</p>
+      
+      <div class="input-group">
+        <label for="input-team1">Equipo / Jugador 1:</label>
+        <input type="text" id="input-team1" value="Equipo Rojo" placeholder="Ej. Equipo Rojo">
+      </div>
+
+      <div class="input-group">
+        <label for="input-team2">Equipo / Jugador 2:</label>
+        <input type="text" id="input-team2" value="Equipo Azul" placeholder="Ej. Equipo Azul">
+      </div>
+
+      <button id="btn-start-game" class="btn">Comenzar Partida</button>
+    </section>
+
     <!-- PANTALLA 1: Inicio de Ronda / Selección de Carta -->
-    <section id="screen-setup" class="screen">
-      <h2>Nueva Ronda</h2>
+    <section id="screen-setup" class="screen hidden">
+      <h2 id="turn-announcement">Turno de: Equipo Rojo</h2>
       <button id="btn-draw-card" class="btn">Sacar Carta</button>
 
       <div id="card-container" class="card hidden">
@@ -42,7 +67,7 @@
       <!-- Área de la Ruleta / Dial -->
       <div id="dial-container">
         <div id="dial">
-          <!-- Escala/Regla semicircular generada dinámicamente -->
+          <!-- Escala/Regla semicircular -->
           <div id="dial-scale" class="dial-scale"></div>
 
           <!-- Zona objetivo (Diana en abanico radial) -->
