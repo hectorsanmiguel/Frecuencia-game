@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Frecuencia - Juego de Mesa</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <div id="app">
+    <!-- Encabezado -->
+    <header>
+      <h1>FRECUENCIA</h1>
+      <div id="score-board">
+        <span>Puntos: <strong id="score">0</strong></span>
+      </div>
+    </header>
+
+    <!-- PANTALLA 1: Inicio de Ronda / Selección de Carta -->
+    <section id="screen-setup" class="screen">
+      <h2>Nueva Ronda</h2>
+      <button id="btn-draw-card" class="btn">Sacar Carta</button>
+
+      <div id="card-container" class="card hidden">
+        <span id="left-concept" class="concept">Frío</span>
+        <span class="vs">vs</span>
+        <span id="right-concept" class="concept">Caliente</span>
+      </div>
+
+      <button id="btn-start-turn" class="btn hidden">Soy el Psíquico (Ver Objetivo)</button>
+    </section>
+
+    <!-- PANTALLA 2: Tablero del Juego (Ruleta) -->
+    <section id="screen-game" class="screen hidden">
+      <!-- Indicador de conceptos -->
+      <div class="concepts-bar">
+        <span id="game-left-concept">Frío</span>
+        <span id="game-right-concept">Caliente</span>
+      </div>
+
+      <!-- Área de la Ruleta / Dial -->
+      <div id="dial-container">
+        <!-- Aquí dibujaremos la ruleta semicircular con CSS/JS -->
+        <div id="dial">
+          <div id="target-zone" class="hidden"></div> <!-- Zona objetivo (se oculta al adivinar) -->
+          <div id="pointer"></div> <!-- Aguja que se mueve -->
+        </div>
+      </div>
+
+      <!-- Controles dinámicos -->
+      <div id="controls">
+        <p id="instruction-text">El Psíquico ve la zona objetivo y da una pista.</p>
+        <button id="btn-hide-target" class="btn">Cerrar Tapa y Pasar Móvil</button>
+        <button id="btn-submit-guess" class="btn hidden">Confirmar Posición</button>
+        <button id="btn-reveal" class="btn hidden">Revelar Resultado</button>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Vinculación de Scripts JS -->
+  <script src="js/cards.js"></script>
+  <script src="js/dial.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
