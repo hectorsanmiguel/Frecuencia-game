@@ -1,15 +1,55 @@
 // --- Variables de estado de la ruleta ---
-let targetAngle = 0;       // Ángulo aleatorio de la zona objetivo (-65 a 65)
+let targetAngle = 0;       // Ángulo aleatorio de la zona objetivo (-60 a 60)
 let currentPointerAngle = 0; // Ángulo actual de la aguja
 let isDragging = false;
+
+// --- Crear la escala tipo regla (0 a 10 con pasos de 0.5) ---
+function renderDialScale() {
+  const scaleContainer = document.getElementById('dial-scale');
+  if (!scaleContainer) return;
+  
+  scaleContainer.innerHTML = ''; // Limpiar previo
+
+  // De 0 a 10 con incrementos de 0.5 son 21 marcas
+  for (let i = 0; i <= 20; i++) {
+    const value = i / 2; // Valores: 0, 0.5, 1, 1.5 ... 10
+    // Mapear el valor de 0..10 a un ángulo de -72° a +72°
+    const angle = -72 + (i * 7.2);
+
+    const tick = document.createElement('div');
+    tick.className = 'scale-tick';
+    
+    // Si es un número entero (0, 1, 2... 10)
+    if (i % 2 === 0) {
+      tick.classList.add('major');
+      
+      const label = document.createElement('span');
+      label.className = 'scale-label';
+      label.textContent = value;
+      
+      // Contrarrotar el texto del número para que siempre se lea verticalmente
+      label.style.transform = `translateX(-50%) rotate(${-angle}deg)`;
+      
+      tick.appendChild(label);
+    }
+
+    tick.style.transform = `translateX(-50%) rotate(${angle}deg)`;
+    scaleContainer.appendChild(tick);
+  }
+}
+
+// Inicializar la escala al cargar el script
+document.addEventListener('DOMContentLoaded', renderDialScale);
+// Por si ya se cargó el DOM
+renderDialScale();
 
 // --- Inicializar nueva ronda ---
 function initRound() {
   const targetZone = document.getElementById('target-zone');
   const pointer = document.getElementById('pointer');
 
-  // Generar ángulo aleatorio para el objetivo (-65 a 65 grados)
-  targetAngle = Math.floor(Math.random() * 130) - 65;
+  // Generar ángulo aleatorio para el objetivo (-55 a 55 grados)
+  targetAngle = Math.floor(Math.random() * 110) - 55;
 
   // Posicionar la zona objetivo
   targetZone.style.transform = `translateX(-50%) rotate(${targetAngle}deg)`;
@@ -73,7 +113,7 @@ window.addEventListener('mouseup', () => {
   isDragging = false;
 });
 
-// Soporte para pantallas táctiles
+// Soporte para pantallas táctiles (Móviles)
 window.addEventListener('touchstart', (e) => {
   const dialContainer = document.getElementById('dial-container');
   if (dialContainer && dialContainer.classList.contains('interactive') && dialContainer.contains(e.target)) {
@@ -94,9 +134,9 @@ window.addEventListener('touchend', () => {
 function calculateScore() {
   const difference = Math.abs(currentPointerAngle - targetAngle);
 
-  if (difference <= 4) return { points: 4, text: "¡DIANA PERFECTA! +4 Puntos" };
-  if (difference <= 10) return { points: 3, text: "¡Casi perfecto! +3 Puntos" };
-  if (difference <= 18) return { points: 2, text: "¡Buen intento! +2 Puntos" };
+  if (difference <= 3) return { points: 4, text: "¡DIANA PERFECTA! 🎯 +4 Puntos" };
+  if (difference <= 9) return { points: 3, text: "¡Casi perfecto! 🟡 +3 Puntos" };
+  if (difference <= 15) return { points: 2, text: "¡Buen intento! 🟠 +2 Puntos" };
   
-  return { points: 0, text: "Fallaste. 0 Puntos" };
+  return { points: 0, text: "Fallaste. ⚪ 0 Puntos" };
 }

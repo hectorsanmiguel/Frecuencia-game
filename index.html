@@ -41,10 +41,16 @@
 
       <!-- Área de la Ruleta / Dial -->
       <div id="dial-container">
-        <!-- Aquí dibujaremos la ruleta semicircular con CSS/JS -->
         <div id="dial">
-          <div id="target-zone" class="hidden"></div> <!-- Zona objetivo (se oculta al adivinar) -->
-          <div id="pointer"></div> <!-- Aguja que se mueve -->
+          <!-- Escala/Regla semicircular generada dinámicamente -->
+          <div id="dial-scale" class="dial-scale"></div>
+
+          <!-- Zona objetivo (Diana en abanico radial) -->
+          <div id="target-zone" class="hidden"></div>
+
+          <!-- Aguja indicadora con la perilla roja central -->
+          <div id="pointer"></div>
+          <div class="center-knob"></div>
         </div>
       </div>
 
