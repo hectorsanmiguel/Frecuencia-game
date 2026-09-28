@@ -24,7 +24,7 @@
       </div>
     </header>
 
-    <!-- PANTALLA 0: Registro de Equipos (Inicial) -->
+    <!-- PANTALLA 0: Registro de Equipos -->
     <section id="screen-setup-teams" class="screen">
       <h2>Configuración de la Partida</h2>
       <p class="subtitle">Introduce el nombre de los jugadores o equipos:</p>
@@ -45,8 +45,25 @@
     <!-- PANTALLA 1: Inicio de Ronda / Selección de Carta -->
     <section id="screen-setup" class="screen hidden">
       <h2 id="turn-announcement">Turno de: Equipo Rojo</h2>
-      <button id="btn-draw-card" class="btn">Sacar Carta</button>
 
+      <!-- Opciones para sacar carta -->
+      <div class="button-group">
+        <button id="btn-draw-card" class="btn">Carta Aleatoria</button>
+        <button id="btn-custom-card-toggle" class="btn btn-secondary">Crear Carta Personalizada</button>
+      </div>
+
+      <!-- Formulario para carta personalizada -->
+      <div id="custom-card-form" class="custom-form hidden">
+        <div class="input-group">
+          <input type="text" id="custom-left" placeholder="Extremo Izquierdo (Ej. Frío)">
+        </div>
+        <div class="input-group">
+          <input type="text" id="custom-right" placeholder="Extremo Derecho (Ej. Caliente)">
+        </div>
+        <button id="btn-save-custom-card" class="btn">Usar esta Carta</button>
+      </div>
+
+      <!-- Visualizador de la Carta Seleccionada -->
       <div id="card-container" class="card hidden">
         <span id="left-concept" class="concept">Frío</span>
         <span class="vs">vs</span>
@@ -58,28 +75,20 @@
 
     <!-- PANTALLA 2: Tablero del Juego (Ruleta) -->
     <section id="screen-game" class="screen hidden">
-      <!-- Indicador de conceptos -->
       <div class="concepts-bar">
         <span id="game-left-concept">Frío</span>
         <span id="game-right-concept">Caliente</span>
       </div>
 
-      <!-- Área de la Ruleta / Dial -->
       <div id="dial-container">
         <div id="dial">
-          <!-- Escala/Regla semicircular -->
           <div id="dial-scale" class="dial-scale"></div>
-
-          <!-- Zona objetivo (Diana en abanico radial) -->
           <div id="target-zone" class="hidden"></div>
-
-          <!-- Aguja indicadora con la perilla roja central -->
           <div id="pointer"></div>
           <div class="center-knob"></div>
         </div>
       </div>
 
-      <!-- Controles dinámicos -->
       <div id="controls">
         <p id="instruction-text">El Psíquico ve la zona objetivo y da una pista.</p>
         <button id="btn-hide-target" class="btn">Cerrar Tapa y Pasar Móvil</button>
@@ -90,7 +99,6 @@
 
   </div>
 
-  <!-- Vinculación de Scripts JS -->
   <script src="js/cards.js"></script>
   <script src="js/dial.js"></script>
   <script src="js/app.js"></script>

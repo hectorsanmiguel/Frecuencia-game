@@ -322,3 +322,23 @@ h1 {
   font-size: 0.95rem;
   color: #94a3b8;
 }
+
+/* --- Botones secundarios y formulario personalizado --- */
+.btn-secondary {
+  background-color: #334155;
+  margin-top: 8px;
+}
+
+.button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.custom-form {
+  background: #0d1b2a;
+  padding: 15px;
+  border-radius: 12px;
+  margin: 15px 0;
+  border: 1px dashed var(--accent-color);
+}

@@ -4,9 +4,12 @@ const gameState = {
     { name: "Equipo 1", score: 0 },
     { name: "Equipo 2", score: 0 }
   ],
-  currentTeamIndex: 0, // 0 para Equipo 1, 1 para Equipo 2
+  currentTeamIndex: 0,
   currentCard: null
 };
+
+// Copia temporal en memoria para la partida actual
+let sessionCards = [...CARDS];
 
 // --- Selección de Elementos del DOM ---
 const screenTeams = document.getElementById('screen-setup-teams');
@@ -26,6 +29,12 @@ const scoreTeam2Box = document.getElementById('score-team2');
 
 const turnAnnouncement = document.getElementById('turn-announcement');
 const btnDrawCard = document.getElementById('btn-draw-card');
+const btnCustomToggle = document.getElementById('btn-custom-card-toggle');
+const customForm = document.getElementById('custom-card-form');
+const customLeft = document.getElementById('custom-left');
+const customRight = document.getElementById('custom-right');
+const btnSaveCustomCard = document.getElementById('btn-save-custom-card');
+
 const cardContainer = document.getElementById('card-container');
 const leftConcept = document.getElementById('left-concept');
 const rightConcept = document.getElementById('right-concept');
@@ -49,7 +58,6 @@ function updateScoreboardUI() {
   scoreVal1.textContent = `${gameState.teams[0].score} pts`;
   scoreVal2.textContent = `${gameState.teams[1].score} pts`;
 
-  // Resaltar el marcador del equipo actual
   if (gameState.currentTeamIndex === 0) {
     scoreTeam1Box.classList.add('active');
     scoreTeam2Box.classList.remove('active');
@@ -70,7 +78,6 @@ function switchTurn() {
 
 // --- Flujo de Pantallas ---
 
-// 1. Iniciar la Partida guardando Nombres
 btnStartGame.addEventListener('click', () => {
   const name1 = inputTeam1.value.trim() || "Equipo 1";
   const name2 = inputTeam2.value.trim() || "Equipo 2";
@@ -86,12 +93,12 @@ btnStartGame.addEventListener('click', () => {
   turnAnnouncement.textContent = `Turno de: ${getCurrentTeam().name}`;
 });
 
-// 2. Sacar Carta
+// 1. Sacar Carta Aleatoria de la Lista
 btnDrawCard.addEventListener('click', () => {
-  if (typeof CARDS === 'undefined' || CARDS.length === 0) return;
+  customForm.classList.add('hidden'); // Ocultar formulario si estaba abierto
 
-  const randomIndex = Math.floor(Math.random() * CARDS.length);
-  gameState.currentCard = CARDS[randomIndex];
+  const randomIndex = Math.floor(Math.random() * sessionCards.length);
+  gameState.currentCard = sessionCards[randomIndex];
 
   leftConcept.textContent = gameState.currentCard.left;
   rightConcept.textContent = gameState.currentCard.right;
@@ -101,7 +108,44 @@ btnDrawCard.addEventListener('click', () => {
   btnStartTurn.textContent = `Soy el Psíquico de ${getCurrentTeam().name}`;
 });
 
-// 3. Comenzar el Turno (Ver Objetivo)
+// 2. Desplegar Formulario para Carta Personalizada
+btnCustomToggle.addEventListener('click', () => {
+  customForm.classList.toggle('hidden');
+  cardContainer.classList.add('hidden');
+  btnStartTurn.classList.add('hidden');
+});
+
+// 3. Guardar Carta Personalizada para esta partida
+btnSaveCustomCard.addEventListener('click', () => {
+  const leftVal = customLeft.value.trim();
+  const rightVal = customRight.value.trim();
+
+  if (!leftVal || !rightVal) {
+    alert("Por favor, introduce ambos extremos para la carta.");
+    return;
+  }
+
+  const customCard = { left: leftVal, right: rightVal };
+  
+  // Se añade solo a la lista de la sesión actual
+  sessionCards.push(customCard);
+  gameState.currentCard = customCard;
+
+  // Mostrar en pantalla
+  leftConcept.textContent = customCard.left;
+  rightConcept.textContent = customCard.right;
+
+  // Limpiar campos y ocultar formulario
+  customLeft.value = '';
+  customRight.value = '';
+  customForm.classList.add('hidden');
+
+  cardContainer.classList.remove('hidden');
+  btnStartTurn.classList.remove('hidden');
+  btnStartTurn.textContent = `Soy el Psíquico de ${getCurrentTeam().name}`;
+});
+
+// 4. Comenzar Turno
 btnStartTurn.addEventListener('click', () => {
   gameLeftConcept.textContent = gameState.currentCard.left;
   gameRightConcept.textContent = gameState.currentCard.right;
@@ -113,7 +157,7 @@ btnStartTurn.addEventListener('click', () => {
   instructionText.textContent = `El Psíquico de ${getCurrentTeam().name} ve la zona objetivo y da una pista.`;
 });
 
-// 4. El Psíquico Oculta la Diana
+// 5. El Psíquico Oculta la Diana
 btnHideTarget.addEventListener('click', () => {
   targetZone.classList.add('hidden');
   dialContainer.classList.add('interactive');
@@ -124,7 +168,7 @@ btnHideTarget.addEventListener('click', () => {
   instructionText.textContent = `Pasa el móvil al adivinador de ${getCurrentTeam().name}. Mueve la aguja al punto correcto.`;
 });
 
-// 5. El Adivinador Fija la Posición
+// 6. Confirmar Posición
 btnSubmitGuess.addEventListener('click', () => {
   dialContainer.classList.remove('interactive');
   dialContainer.style.cursor = 'default';
@@ -134,7 +178,7 @@ btnSubmitGuess.addEventListener('click', () => {
   instructionText.textContent = 'Posición fijada. Pulsa "Revelar Resultado".';
 });
 
-// 6. Revelar Resultado y Cambiar de Turno
+// 7. Revelar Resultado
 btnReveal.addEventListener('click', () => {
   targetZone.classList.remove('hidden');
 
@@ -147,11 +191,10 @@ btnReveal.addEventListener('click', () => {
   instructionText.textContent = `${result.text} para ${currentTeam.name}!`;
   btnReveal.classList.add('hidden');
 
-  // Transición a la siguiente ronda tras 4 segundos
   setTimeout(() => {
-    switchTurn(); // Alternar el turno al otro equipo
+    switchTurn();
 
-    btnDrawCard.textContent = "Sacar Carta";
+    btnDrawCard.textContent = "Carta Aleatoria";
     cardContainer.classList.add('hidden');
     btnStartTurn.classList.add('hidden');
     screenGame.classList.add('hidden');
