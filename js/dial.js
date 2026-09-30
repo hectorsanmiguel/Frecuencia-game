@@ -3,6 +3,61 @@ let targetAngle = 0;       // Ángulo aleatorio de la zona objetivo (-68 a 68)
 let currentPointerAngle = 0; // Ángulo actual de la aguja
 let isDragging = false;
 
+const targetSegments = [
+  { start: 75, end: 81, color: '#f59e0b' },
+  { start: 81, end: 87, color: '#f97316' },
+  { start: 87, end: 93, color: '#38bdf8' },
+  { start: 93, end: 99, color: '#f97316' },
+  { start: 99, end: 105, color: '#f59e0b' }
+];
+
+function renderTargetZone() {
+  const targetZone = document.getElementById('target-zone');
+  if (!targetZone || targetZone.querySelector('svg')) return;
+
+  const svgNamespace = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(svgNamespace, 'svg');
+  svg.setAttribute('viewBox', '0 0 1000 500');
+  svg.setAttribute('preserveAspectRatio', 'none');
+  svg.setAttribute('aria-hidden', 'true');
+  svg.setAttribute('focusable', 'false');
+
+  const defs = document.createElementNS(svgNamespace, 'defs');
+  const clipPath = document.createElementNS(svgNamespace, 'clipPath');
+  clipPath.setAttribute('id', 'target-fan-clip');
+  clipPath.setAttribute('clipPathUnits', 'userSpaceOnUse');
+
+  const clipShape = document.createElementNS(svgNamespace, 'path');
+  clipShape.setAttribute('d', 'M 0 500 A 500 500 0 0 1 1000 500 Z');
+  clipPath.appendChild(clipShape);
+  defs.appendChild(clipPath);
+  svg.appendChild(defs);
+
+  const sectors = document.createElementNS(svgNamespace, 'g');
+  sectors.setAttribute('clip-path', 'url(#target-fan-clip)');
+
+  const pointAt = (angle, radius) => {
+    const radians = (270 + angle) * Math.PI / 180;
+    const x = 500 + Math.sin(radians) * radius;
+    const y = 500 - Math.cos(radians) * radius;
+    return `${x.toFixed(3)} ${y.toFixed(3)}`;
+  };
+
+  for (const segment of targetSegments) {
+    const overlapEnd = Math.min(segment.end + 0.25, 105);
+    const sector = document.createElementNS(svgNamespace, 'path');
+    sector.setAttribute(
+      'd',
+      `M 500 500 L ${pointAt(segment.start, 2000)} A 2000 2000 0 0 1 ${pointAt(overlapEnd, 2000)} Z`
+    );
+    sector.setAttribute('fill', segment.color);
+    sectors.appendChild(sector);
+  }
+
+  svg.appendChild(sectors);
+  targetZone.replaceChildren(svg);
+}
+
 // --- Crear la escala tipo regla (0 a 10 con pasos de 0.5) ---
 function renderDialScale() {
   const scaleContainer = document.getElementById('dial-scale');
@@ -40,8 +95,10 @@ function renderDialScale() {
 
 // Inicializar la escala al cargar el script
 document.addEventListener('DOMContentLoaded', renderDialScale);
+document.addEventListener('DOMContentLoaded', renderTargetZone);
 // Por si ya se cargó el DOM
 renderDialScale();
+renderTargetZone();
 
 // --- Inicializar nueva ronda ---
 function initRound() {
