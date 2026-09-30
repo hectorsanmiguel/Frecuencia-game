@@ -107,11 +107,25 @@ function initRound() {
 
   // La escala visible va de -72° a 72° y la franja perfecta ocupa ±3°.
   const maxTargetAngle = Math.min(68, 72 - 3 - 1);
-  const randomOffset = Math.random() * 2 - 1;
-  const edgeBiasExponent = 0.65;
-  const weightedOffset = Math.sign(randomOffset)
-    * Math.pow(Math.abs(randomOffset), edgeBiasExponent);
-  targetAngle = weightedOffset * maxTargetAngle;
+  const angleForValue = (value) => -72 + value * 14.4;
+  const angleRanges = [
+    { start: -maxTargetAngle, end: angleForValue(4), weight: 0.45 },
+    { start: angleForValue(4), end: angleForValue(6), weight: 0.1 },
+    { start: angleForValue(6), end: maxTargetAngle, weight: 0.45 }
+  ];
+
+  let rangeRoll = Math.random();
+  let selectedRange = angleRanges[angleRanges.length - 1];
+  for (const range of angleRanges) {
+    rangeRoll -= range.weight;
+    if (rangeRoll < 0) {
+      selectedRange = range;
+      break;
+    }
+  }
+
+  targetAngle = selectedRange.start
+    + Math.random() * (selectedRange.end - selectedRange.start);
 
   // Posicionar la zona objetivo
   targetZone.style.transform = `translateX(-50%) rotate(${targetAngle}deg)`;
