@@ -27,21 +27,30 @@ function renderTargetZone() {
   clipPath.setAttribute('id', 'target-fan-clip');
   clipPath.setAttribute('clipPathUnits', 'userSpaceOnUse');
 
-  const clipShape = document.createElementNS(svgNamespace, 'path');
-  clipShape.setAttribute('d', 'M 0 500 A 500 500 0 0 1 1000 500 Z');
-  clipPath.appendChild(clipShape);
-  defs.appendChild(clipPath);
-  svg.appendChild(defs);
-
-  const sectors = document.createElementNS(svgNamespace, 'g');
-  sectors.setAttribute('clip-path', 'url(#target-fan-clip)');
-
   const pointAt = (angle, radius) => {
     const radians = (270 + angle) * Math.PI / 180;
     const x = 500 + Math.sin(radians) * radius;
     const y = 500 - Math.cos(radians) * radius;
     return `${x.toFixed(3)} ${y.toFixed(3)}`;
   };
+
+  const clipShape = document.createElementNS(svgNamespace, 'path');
+  const leftLimit = pointAt(18, 500);
+  const rightLimit = pointAt(162, 500);
+  clipShape.setAttribute(
+    'd',
+    `M 500 500 L ${rightLimit} A 500 500 0 0 0 ${leftLimit} Z`
+  );
+  clipPath.appendChild(clipShape);
+  defs.appendChild(clipPath);
+  svg.appendChild(defs);
+
+  const clippedSectors = document.createElementNS(svgNamespace, 'g');
+  clippedSectors.setAttribute('clip-path', 'url(#target-fan-clip)');
+
+  const sectors = document.createElementNS(svgNamespace, 'g');
+  sectors.setAttribute('id', 'target-zone-sectors');
+  clippedSectors.appendChild(sectors);
 
   for (const segment of targetSegments) {
     const overlapEnd = Math.min(segment.end + 0.25, 105);
@@ -54,7 +63,7 @@ function renderTargetZone() {
     sectors.appendChild(sector);
   }
 
-  svg.appendChild(sectors);
+  svg.appendChild(clippedSectors);
   targetZone.replaceChildren(svg);
 }
 
@@ -127,8 +136,10 @@ function initRound() {
   targetAngle = selectedRange.start
     + Math.random() * (selectedRange.end - selectedRange.start);
 
-  // Posicionar la zona objetivo
-  targetZone.style.transform = `translateX(-50%) rotate(${targetAngle}deg)`;
+  // Rotar el abanico dentro de un recorte fijo entre las marcas 0 y 10.
+  targetZone.style.transform = 'translateX(-50%)';
+  const targetSectors = targetZone.querySelector('#target-zone-sectors');
+  if (targetSectors) targetSectors.setAttribute('transform', `rotate(${targetAngle} 500 500)`);
   targetZone.classList.remove('hidden');
 
   // Resetear la aguja al centro (0 grados)
@@ -145,7 +156,7 @@ function initRound() {
 // --- Actualizar posición visual de la aguja ---
 function updatePointerPosition(angle) {
   const pointer = document.getElementById('pointer');
-  currentPointerAngle = Math.max(-75, Math.min(75, angle));
+  currentPointerAngle = Math.max(-72, Math.min(72, angle));
   if (pointer) {
     pointer.style.transform = `translateX(-50%) rotate(${currentPointerAngle}deg) translateZ(0)`;
   }
@@ -208,7 +219,14 @@ window.addEventListener('touchend', () => {
 
 // --- Función para calcular la puntuación ---
 function calculateScore() {
-  const difference = Math.abs(currentPointerAngle - targetAngle);
+  const pointer = document.getElementById('pointer');
+  const pointerAngularTolerance = pointer && pointer.offsetHeight
+    ? Math.atan2(pointer.offsetWidth / 2, pointer.offsetHeight) * (180 / Math.PI)
+    : 0;
+  const difference = Math.max(
+    0,
+    Math.abs(currentPointerAngle - targetAngle) - pointerAngularTolerance
+  );
 
   if (difference <= 3) return { points: 4, text: "¡DIANA PERFECTA! 🎯 +4 Puntos" };
   if (difference <= 9) return { points: 3, text: "¡Casi perfecto! 🟡 +3 Puntos" };

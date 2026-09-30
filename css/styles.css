@@ -312,7 +312,7 @@ h2 {
   border-top-right-radius: 50% 100%;
   background: none;
   transform-origin: 50% 100%;
-  transform: translateX(-50%) rotate(0deg);
+  transform: translateX(-50%);
   isolation: isolate;
   mix-blend-mode: normal;
   -webkit-backface-visibility: hidden;
