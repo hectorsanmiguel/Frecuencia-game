@@ -57,7 +57,7 @@ function initRound() {
   targetAngle = weightedOffset * maxTargetAngle;
 
   // Posicionar la zona objetivo
-  targetZone.style.transform = `translateX(-50%) rotate(${targetAngle}deg) translateZ(0)`;
+  targetZone.style.transform = `translateX(-50%) rotate(${targetAngle}deg)`;
   targetZone.classList.remove('hidden');
 
   // Resetear la aguja al centro (0 grados)
