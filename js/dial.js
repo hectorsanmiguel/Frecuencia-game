@@ -57,7 +57,7 @@ function initRound() {
   targetAngle = weightedOffset * maxTargetAngle;
 
   // Posicionar la zona objetivo
-  targetZone.style.transform = `translateX(-50%) rotate(${targetAngle}deg)`;
+  targetZone.style.transform = `translateX(-50%) rotate(${targetAngle}deg) translateZ(0)`;
   targetZone.classList.remove('hidden');
 
   // Resetear la aguja al centro (0 grados)
@@ -76,7 +76,7 @@ function updatePointerPosition(angle) {
   const pointer = document.getElementById('pointer');
   currentPointerAngle = Math.max(-75, Math.min(75, angle));
   if (pointer) {
-    pointer.style.transform = `translateX(-50%) rotate(${currentPointerAngle}deg)`;
+    pointer.style.transform = `translateX(-50%) rotate(${currentPointerAngle}deg) translateZ(0)`;
   }
 }
 
