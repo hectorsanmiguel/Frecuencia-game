@@ -1,5 +1,5 @@
 // --- Variables de estado de la ruleta ---
-let targetAngle = 0;       // Ángulo aleatorio de la zona objetivo (-60 a 60)
+let targetAngle = 0;       // Ángulo aleatorio de la zona objetivo (-68 a 68)
 let currentPointerAngle = 0; // Ángulo actual de la aguja
 let isDragging = false;
 
@@ -48,8 +48,9 @@ function initRound() {
   const targetZone = document.getElementById('target-zone');
   const pointer = document.getElementById('pointer');
 
-  // Generar ángulo aleatorio para el objetivo (-55 a 55 grados)
-  targetAngle = Math.floor(Math.random() * 110) - 55;
+  // La escala visible va de -72° a 72° y la franja perfecta ocupa ±3°.
+  const maxTargetAngle = Math.min(68, 72 - 3 - 1);
+  targetAngle = (Math.random() * 2 - 1) * maxTargetAngle;
 
   // Posicionar la zona objetivo
   targetZone.style.transform = `translateX(-50%) rotate(${targetAngle}deg)`;

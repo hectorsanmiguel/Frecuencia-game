@@ -5,11 +5,13 @@ const gameState = {
     { name: "Equipo 2", score: 0 }
   ],
   currentTeamIndex: 0,
-  currentCard: null
+  currentCard: null,
+  currentCardIndex: null
 };
 
 // Copia temporal en memoria para la partida actual
 let sessionCards = [...CARDS];
+let lastCardIndex = null;
 
 // --- Selección de Elementos del DOM ---
 const screenTeams = document.getElementById('screen-setup-teams');
@@ -97,8 +99,16 @@ btnStartGame.addEventListener('click', () => {
 btnDrawCard.addEventListener('click', () => {
   customForm.classList.add('hidden'); // Ocultar formulario si estaba abierto
 
-  const randomIndex = Math.floor(Math.random() * sessionCards.length);
+  const canAvoidLastCard = sessionCards.length > 1
+    && lastCardIndex !== null
+    && lastCardIndex >= 0
+    && lastCardIndex < sessionCards.length;
+  const availableCardCount = sessionCards.length - (canAvoidLastCard ? 1 : 0);
+  let randomIndex = Math.floor(Math.random() * availableCardCount);
+  if (canAvoidLastCard && randomIndex >= lastCardIndex) randomIndex++;
+
   gameState.currentCard = sessionCards[randomIndex];
+  gameState.currentCardIndex = randomIndex;
 
   leftConcept.textContent = gameState.currentCard.left;
   rightConcept.textContent = gameState.currentCard.right;
@@ -130,6 +140,7 @@ btnSaveCustomCard.addEventListener('click', () => {
   // Se añade solo a la lista de la sesión actual
   sessionCards.push(customCard);
   gameState.currentCard = customCard;
+  gameState.currentCardIndex = sessionCards.length - 1;
 
   // Mostrar en pantalla
   leftConcept.textContent = customCard.left;
@@ -181,6 +192,7 @@ btnSubmitGuess.addEventListener('click', () => {
 // 7. Revelar Resultado
 btnReveal.addEventListener('click', () => {
   targetZone.classList.remove('hidden');
+  lastCardIndex = gameState.currentCardIndex;
 
   const result = calculateScore();
   const currentTeam = getCurrentTeam();
